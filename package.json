@@ -1,0 +1,29 @@
+{
+    "name": "nodejs-cli",
+    "version": "1.0.0",
+    "description": "Creating RESTful API CLI",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "start": "node index.js",
+        "sag": "gulp index.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/SamariddinS/Node.js-CLI.git"
+    },
+    "keywords": [
+        "file-manager",
+        "cli",
+        "api",
+        "Restful"
+    ],
+    "author": "Samariddin Sayfiddinov",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/SamariddinS/Node.js-CLI/issues",
+        "email": "s.x.sayfiddionv@gmail.com"
+    },
+    "homepage": "https://github.com/SamariddinS/Node.js-CLI#readme"
+}
