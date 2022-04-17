@@ -1,95 +1,114 @@
-/*
-Primary file for API
-*/
-
 // Dependencies
-var http = require("http");
-var url = require('url');
-var StringDecoder = require('string_decoder').StringDecoder;
+import https from "https";
+import http from "http";
+import url from 'url';
+import fs from "fs";
+import { environmentToExport as config } from "./config.js";
+import { lib as _data } from './lib/data.js';
 
-// Configure the server to respond to all requests with a string
-var server = http.createServer(function(req, res) {
 
-    // Parse the url
-    var parsedUrl = url.parse(req.url, true);
+// Instantion the HTTP server
+const httpServer = http.createServer((req, res) => {
+    unifiedServer(req, res);
+});
+
+// Start the HTTP server
+httpServer.listen(config.httpPort, () => {
+    console.log(`The server is listening ob port ${config.httpPort}`);
+});
+
+// Instantion the HTTPS server
+const httpsServerOptions = {
+    'key': fs.readFileSync('./https/key.pem'),
+    'curt': fs.readFileSync('./https/cert.pem'),
+};
+
+const httpsServer = http.createServer(httpsServerOptions, (req, res) => {
+    unifiedServer(req, res);
+});
+
+
+// Start the HTTPS server
+httpsServer.listen(config.httpsPort, () => {
+    console.log(`The server is listening ob port ${config.httpsPort}`);
+});
+
+// All the server logic for both the http and https server
+const unifiedServer = (req, res) => {
+    // Get the URL and parse it
+    const parsedUrl = url.parse(req.url, true);
 
     // Get the path
-    var path = parsedUrl.pathname;
-    var trimmedPath = path.replace(/^\/+|\/+$/g, '');
+    const path = parsedUrl.pathname;
+    const trimmedPath = path.replace(/^\/+|\/+$/g, '');
 
     // Get the query string as an object
-    var queryStringObject = parsedUrl.query;
+    const queryStringObject = parsedUrl.query;
 
     // Get the HTTP Method
-    var method = req.method.toLowerCase();
+    const method = req.method.toLowerCase();
 
     // Get the headers as an object
-    var headers = req.headers;
+    const headers = req.headers;
 
     // Get the payload, if any
-    var decoder = new StringDecoder('utf-8');
-    var buffer = '';
+    let buffer = '';
 
-    req.on('data', function(data) {
-        buffer += decoder.write(data);
+    req.on('data', (data) => {
+        buffer += new TextDecoder().decode(data);
     });
-    req.on('end', function() {
-        buffer += decoder.end();
+    req.on('end', () => {
 
-        // Check the router for a matching path for a handler. If one is not found, use the notFound handler instead.
-        var chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
+        // Check the handler this request should go to. If one is not found, use the notFound handler instead.
+        const chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
 
         // Construct the data object to send to the handler
-        var data = {
+        const data = {
             'trimmedPath': trimmedPath,
             'queryStringObject': queryStringObject,
             'method': method,
             'headers': headers,
-            'payload': buffer
+            'payload': buffer,
         };
 
         // Route the request to the handler specified in the router
-        chosenHandler(data, function(statusCode, payload) {
+        chosenHandler(data, (statusCode, payload) => {
 
-            // Use the status code returned from the handler, or set the default status code to 200
+            // Use the status code called back handler, or default status code to 200
             statusCode = typeof(statusCode) == 'number' ? statusCode : 200;
 
-            // Use the payload returned from the handler, or set the default payload to an empty object
+            // Use the payload called back by the handler, or default payload to an empty object
             payload = typeof(payload) == 'object' ? payload : {};
 
             // Convert the payload to a string
-            var payloadString = JSON.stringify(payload);
+            const payloadString = JSON.stringify(payload);
 
             // Return the response
             res.setHeader('Content-Type', 'application/json');
             res.writeHead(statusCode);
             res.end(payloadString);
+
+            // Log the request path
             console.log("Returning this response: ", statusCode, payloadString);
         });
 
     });
-
-});
-
-// Start the server
-server.listen(3000, function() {
-    console.log("The server is up and running now");
-});
+};
 
 // Define the handlers
-var handlers = {};
+const handlers = {};
 
-// Sample handler
-handlers.sample = function(data, callback) {
-    callback(406, { 'name': 'sample hendler' });
+// Ping handler
+handlers.ping = (data, callback) => {
+    callback(200);
 };
 
 // Not found handler
-handlers.notFound = function(data, callback) {
+handlers.notFound = (data, callback) => {
     callback(404);
 };
 
 // Define a request router
-var router = {
-    'sample': handlers.sample
+const router = {
+    'ping': handlers.ping,
 };
