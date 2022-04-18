@@ -4,8 +4,9 @@ import http from "http";
 import url from 'url';
 import fs from "fs";
 import { environmentToExport as config } from "./config.js";
+import { handlers } from "./lib/handlers.js";
 import { lib as _data } from './lib/data.js';
-
+import { helpers } from "./lib/helpers.js";
 
 // Instantion the HTTP server
 const httpServer = http.createServer((req, res) => {
@@ -23,7 +24,7 @@ const httpsServerOptions = {
     'curt': fs.readFileSync('./https/cert.pem'),
 };
 
-const httpsServer = http.createServer(httpsServerOptions, (req, res) => {
+const httpsServer = https.createServer(httpsServerOptions, (req, res) => {
     unifiedServer(req, res);
 });
 
@@ -68,7 +69,7 @@ const unifiedServer = (req, res) => {
             'queryStringObject': queryStringObject,
             'method': method,
             'headers': headers,
-            'payload': buffer,
+            'payload': helpers.parseJsonToObject(buffer),
         };
 
         // Route the request to the handler specified in the router
@@ -95,20 +96,9 @@ const unifiedServer = (req, res) => {
     });
 };
 
-// Define the handlers
-const handlers = {};
-
-// Ping handler
-handlers.ping = (data, callback) => {
-    callback(200);
-};
-
-// Not found handler
-handlers.notFound = (data, callback) => {
-    callback(404);
-};
-
 // Define a request router
 const router = {
     'ping': handlers.ping,
+    'users': handlers.users,
+    'tokens': handlers.tokens,
 };
