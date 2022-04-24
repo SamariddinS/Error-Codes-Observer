@@ -9,6 +9,11 @@ environments.staging = {
     'envName': 'staging',
     'hashingSecret': 'thisIsASecret',
     'maxChecks': 5,
+    'twilio': {
+        'accountSid': 'AC3d46ccc9af30313167a45d45581703f0',
+        'authToken': 'fce58621ad7bcb377cbbc3c6e0ada8fd',
+        'fromPhone': '+19705175410'
+    },
 };
 
 // Production environment
@@ -18,6 +23,11 @@ environments.production = {
     'envName': 'production',
     'hashingSecret': 'thisIsASecret',
     'maxChecks': 5,
+    'twilio': {
+        'accountSid': '',
+        'authToken': '',
+        'fromPhone': '',
+    },
 };
 
 // Detwermine which environment was passed as a command-lind argument

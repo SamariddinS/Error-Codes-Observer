@@ -8,6 +8,11 @@ import { handlers } from './lib/handlers.js';
 import { lib as _data } from './lib/data.js';
 import { helpers } from './lib/helpers.js';
 
+// TODO: GET RID OF THIS
+helpers.sendTwilioSms('5005552435', 'Hello!', (err) => {
+    console.log('this was the error', err);
+});
+
 // Instantion the HTTP server
 const httpServer = http.createServer((req, res) => {
     unifiedServer(req, res);
