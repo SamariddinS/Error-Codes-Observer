@@ -2,11 +2,11 @@
 Native Node.js application to observing error codes of web-applications, made on RESTful API
 
 Application details
-- RESTful API working on:
+RESTful API working on:
     • log in/up
     • token auth.
     • logging sessions
     • CRUD operations
-- CLI
+CLI
 - 
 From my mastering node.js course with www.pirple.com platform
