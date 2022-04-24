@@ -3,7 +3,7 @@ Native Node.js application to observing error codes of web-applications, made on
 ---
 
 Application details:
-RESTful API <img src="https://github.com/SamariddinS/SamariddinS/blob/main/img/API.png" width="25"> working on.
+RESTful API <img src="https://github.com/SamariddinS/SamariddinS/blob/main/img/API.png" width="30"> working on.
 - <img src="https://github.com/SamariddinS/SamariddinS/blob/main/img/login.png" width="20"> log in/up.
 - <img src="https://github.com/SamariddinS/SamariddinS/blob/main/img/token.png" width="20"> token auth.
 - <img src="https://github.com/SamariddinS/SamariddinS/blob/main/img/log.jpg" width="20"> logging sessions.
