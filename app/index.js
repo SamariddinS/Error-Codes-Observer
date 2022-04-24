@@ -1,12 +1,12 @@
-// Dependencies
-import https from "https";
-import http from "http";
+/*  Dependencies  */
+import https from 'https';
+import http from 'http';
 import url from 'url';
-import fs from "fs";
-import { environmentToExport as config } from "./config.js";
-import { handlers } from "./lib/handlers.js";
+import fs from 'fs';
+import { environmentToExport as config } from './config.js';
+import { handlers } from './lib/handlers.js';
 import { lib as _data } from './lib/data.js';
-import { helpers } from "./lib/helpers.js";
+import { helpers } from './lib/helpers.js';
 
 // Instantion the HTTP server
 const httpServer = http.createServer((req, res) => {
@@ -101,4 +101,5 @@ const router = {
     'ping': handlers.ping,
     'users': handlers.users,
     'tokens': handlers.tokens,
+    'checks': handlers.checks,
 };

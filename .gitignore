@@ -1,6 +1,8 @@
-/node_modules
-/packages
 .log
 .tmp
-Thumbs.db
 .idea
+.eslintrc.cjs
+Thumbs.db
+/node_modules
+/packages
+/https

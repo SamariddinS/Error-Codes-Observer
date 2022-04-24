@@ -6,7 +6,6 @@
     "type": "module",
     "scripts": {
         "start": "node index.js",
-        "sag": "gulp index.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
@@ -25,5 +24,8 @@
         "url": "https://github.com/SamariddinS/Node.js-CLI/issues",
         "email": "s.x.sayfiddionv@gmail.com"
     },
-    "homepage": "https://github.com/SamariddinS/Node.js-CLI#readme"
+    "homepage": "https://github.com/SamariddinS/Node.js-CLI#readme",
+    "devDependencies": {
+        "eslint": "^8.14.0"
+    }
 }
