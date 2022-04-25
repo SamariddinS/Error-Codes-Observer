@@ -3,7 +3,7 @@
 // Dependencies
 import { lib as _data } from "./data.js";
 import { helpers } from "./helpers.js"
-import { environmentToExport as config } from "../config.js"
+import { environmentToExport as config } from "./config.js"
 
 // Define all the handlers
 export const handlers = {};
@@ -39,7 +39,7 @@ handlers._users.post = (data, callback) => {
     // Check that all required fields are filled out
     const firstName = typeof(data.payload.firstName) == 'string' && data.payload.firstName.trim().length > 0 ? data.payload.firstName.trim() : false;
     const lastName = typeof(data.payload.lastName) == 'string' && data.payload.lastName.trim().length > 0 ? data.payload.lastName.trim() : false;
-    const phone = typeof(data.payload.phone) == 'string' && data.payload.phone.trim().length == 12 ? data.payload.phone.trim() : false;
+    const phone = typeof(data.payload.phone) == 'string' && data.payload.phone.trim().length == 9 ? data.payload.phone.trim() : false;
     const password = typeof(data.payload.password) == 'string' && data.payload.password.trim().length > 0 ? data.payload.password.trim() : false;
     const tosAgreement = typeof(data.payload.tosAgreement) == 'boolean' && data.payload.tosAgreement == true ? true : false;
 
@@ -88,7 +88,7 @@ handlers._users.post = (data, callback) => {
 // Optional data: none
 handlers._users.get = (data, callback) => {
     // Check that phone number is valid
-    const phone = typeof(data.queryStringObject.phone) == 'string' && data.queryStringObject.phone.trim().length == 12 ? data.queryStringObject.phone.trim() : false;
+    const phone = typeof(data.queryStringObject.phone) == 'string' && data.queryStringObject.phone.trim().length == 9 ? data.queryStringObject.phone.trim() : false;
     if (phone) {
 
         // Get token from headers
@@ -119,7 +119,7 @@ handlers._users.get = (data, callback) => {
 // Optional data: firstName, lastName, password (at least one must be specified)
 handlers._users.put = (data, callback) => {
     // Check for required field
-    const phone = typeof(data.payload.phone) == 'string' && data.payload.phone.trim().length == 12 ? data.payload.phone.trim() : false;
+    const phone = typeof(data.payload.phone) == 'string' && data.payload.phone.trim().length == 9 ? data.payload.phone.trim() : false;
 
     // Check for optional fields
     const firstName = typeof(data.payload.firstName) == 'string' && data.payload.firstName.trim().length > 0 ? data.payload.firstName.trim() : false;
@@ -128,7 +128,7 @@ handlers._users.put = (data, callback) => {
 
     // Error if phone is invalid
     if (phone) {
-        // Error if nothing is sent to updata
+        // Error if nothing is sent to update
         if (firstName || lastName || password) {
 
             // Get token from headers
@@ -152,7 +152,7 @@ handlers._users.put = (data, callback) => {
                                 userData.hashedPassword = helpers.hash(password);
                             }
                             // Store the new updates
-                            _data.updata('users', phone, userData, (err) => {
+                            _data.update('users', phone, userData, (err) => {
                                 if (!err) {
                                     callback(200);
                                 } else {
@@ -179,7 +179,7 @@ handlers._users.put = (data, callback) => {
 // Required data: phone
 handlers._users.delete = (data, callback) => {
     // Check that phone number is valid
-    const phone = typeof(data.queryStringObject.phone) == 'string' && data.queryStringObject.phone.trim().length == 12 ? data.queryStringObject.phone.trim() : false;
+    const phone = typeof(data.queryStringObject.phone) == 'string' && data.queryStringObject.phone.trim().length == 9 ? data.queryStringObject.phone.trim() : false;
     if (phone) {
 
         // Get token from headers
@@ -254,7 +254,7 @@ handlers._tokens = {};
 // Required data: phone, password
 // Optional data: none
 handlers._tokens.post = (data, callback) => {
-    const phone = typeof(data.payload.phone) == 'string' && data.payload.phone.trim().length == 12 ? data.payload.phone.trim() : false;
+    const phone = typeof(data.payload.phone) == 'string' && data.payload.phone.trim().length == 9 ? data.payload.phone.trim() : false;
     const password = typeof(data.payload.password) == 'string' && data.payload.password.trim().length > 0 ? data.payload.password.trim() : false;
     if (phone && password) {
         // Lookup the user who matches that phone number
@@ -327,7 +327,7 @@ handlers._tokens.put = (data, callback) => {
                     // Set the expiration an hour from now
                     tokenData.expires = Date.now() + 1000 * 60 * 60;
                     // Store the new updates
-                    _data.updata('tokens', id, tokenData, (err) => {
+                    _data.update('tokens', id, tokenData, (err) => {
                         if (!err) {
                             callback(200);
                         } else {
@@ -457,12 +457,12 @@ handlers._checks.post = (data, callback) => {
                                     userData.checks.push(checkId);
 
                                     // Save the new user data
-                                    _data.updata('users', userPhone, userData, (err) => {
+                                    _data.update('users', userPhone, userData, (err) => {
                                         if (!err) {
                                             // Return the data about the new check
                                             callback(200, checkObject);
                                         } else {
-                                            callback(500, { 'Error': 'Could not updata the user with the new check' });
+                                            callback(500, { 'Error': 'Could not update the user with the new check' });
                                         }
                                     });
                                 } else {
@@ -546,7 +546,7 @@ handlers._checks.put = (data, callback) => {
                     // Verify that the given token is valid and belongs to the user who created the check
                     handlers._tokens.verifyToken(token, checkData.userPhone, (tokenIsValid) => {
                         if (tokenIsValid) {
-                            // Updata the check where necessery
+                            // update the check where necessery
                             if (protocol) {
                                 checkData.protocol = protocol;
                             }
@@ -564,7 +564,7 @@ handlers._checks.put = (data, callback) => {
                             }
 
                             // Store the new updates
-                            _data.updata('checks', id, checkData, (err) => {
+                            _data.update('checks', id, checkData, (err) => {
                                 if (!err) {
                                     callback(200);
                                 } else {

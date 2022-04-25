@@ -52,8 +52,8 @@ lib.read = (dir, file, callback) => {
     });
 };
 
-// Updata data inside a file
-lib.updata = (dir, file, data, callback) => {
+// Update data inside a file
+lib.update = (dir, file, data, callback) => {
     // Open the file for writing
     fs.open(lib.baseDir + dir + '/' + file + '.json', 'r+', (err, fileDescriptor) => {
         if (!err) {
@@ -82,7 +82,7 @@ lib.updata = (dir, file, data, callback) => {
                 }
             });
         } else {
-            callback('Could not open the file for updata, it may not exist yet');
+            callback('Could not open the file for update, it may not exist yet');
         }
     });
 };
@@ -98,3 +98,21 @@ lib.delete = (dir, file, callback) => {
         }
     });
 };
+
+
+// list all the items in a directory
+lib.list = (dir, callback) => {
+    fs.readdir(lib.baseDir + dir + '/', (err, data) => {
+        if (!err && data && data.length > 0) {
+
+            const trimmedFileNames = [];
+
+            data.forEach((fileName) => {
+                trimmedFileNames.push(fileName.replace('.json', ''));
+            });
+
+            callback(false, trimmedFileNames);
+
+        } else { callback(err, data); }
+    });
+}

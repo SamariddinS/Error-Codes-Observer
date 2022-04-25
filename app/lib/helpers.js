@@ -3,7 +3,7 @@
 
 // Dependencies
 import { createHmac } from "crypto";
-import { environmentToExport as config } from "../config.js";
+import { environmentToExport as config } from "./config.js";
 import https from 'https';
 
 
@@ -58,7 +58,7 @@ helpers.createRandomString = (strLen) => {
 // Send an SMS message via Twilio
 helpers.sendTwilioSms = (phone, msg, callback) => {
     // Validate parameters
-    phone = typeof(phone) == 'string' && phone.trim().length == 10 ? phone.trim() : false;
+    phone = typeof(phone) == 'string' && phone.trim().length == 9 ? phone.trim() : false;
     msg = typeof(msg) == 'string' && msg.trim().length <= 1600 ? msg.trim() : false;
 
     if (phone && msg) {
