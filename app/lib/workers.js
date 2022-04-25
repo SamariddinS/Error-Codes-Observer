@@ -3,6 +3,7 @@
 // Dependemcies
 import { lib as _data } from './data.js';
 import { helpers } from './helpers.js';
+import { logs } from './logs.js'
 import https from 'https';
 import http from 'http';
 import path from 'path';
@@ -137,6 +138,10 @@ workers.processCheckOutcome = (originalCheckData, checkOutcome) => {
     // Decide if an alert is warranted
     const alertWarranted = originalCheckData.lastChecked && originalCheckData.state !== state ? true : false;
 
+    // Log the outcome
+    const timeOfCheck = Date.now();
+    workers.log(originalCheckData, checkOutcome, state, alertWarranted, timeOfCheck);
+
     // Update the check data
     const newCheckData = originalCheckData;
     newCheckData.state = state;
@@ -170,12 +175,80 @@ workers.alertUserToStatusChange = (newCheckData) => {
 };
 
 
+// Send check data to a log file
+workers.log = (originalCheckData, checkOutcome, state, alertWarranted, timeOfCheck) => {
+    // Form the log data
+    const logData = {
+        'check': originalCheckData,
+        'outcome': checkOutcome,
+        'state': state,
+        'alert': alertWarranted,
+        'time': timeOfCheck
+    };
+
+    // Convert the data to a string
+    const logString = JSON.stringify(logData);
+
+    // Determine the name of the log file
+    const logFileName = originalCheckData.id;
+
+    // Append the log string to the file
+    _logs.append(logFileName, logString, (err) => {
+        if (!err) {
+            console.log("Logging to file succeeded");
+        } else {
+            console.log("Logging to file failed");
+        }
+    });
+
+};
+
+
 // Timer to execute the worker-proccess once per minute
 workers.loop = () => {
     setInterval(() => {
         workers.gatherAllChecks();
     }, 1000 * 60)
 };
+
+
+// Rotate (compress) the log files
+workers.rotateLogs = () => {
+    // List all the (non compressed) log files
+    _logs.list(false, (err, logs) => {
+        if (!err && logs && logs.length > 0) {
+            logs.forEach((logName) => {
+                // Compress the data to a different file
+                const logId = logName.replace('.log', '');
+                const newFileId = logId + '-' + Date.now();
+                _logs.compress(logId, newFileId, (err) => {
+                    if (!err) {
+                        // Truncate the log
+                        _logs.truncate(logId, (err) => {
+                            if (!err) {
+                                console.log("Success truncating logfile");
+                            } else {
+                                console.log("Error truncating logfile");
+                            }
+                        });
+                    } else {
+                        console.log("Error compressing one of the log files.", err);
+                    }
+                });
+            });
+        } else {
+            console.log('Error: Could not find any logs to rotate');
+        }
+    });
+};
+
+// Timer to execute the log-rotation process once per day
+workers.logRotationLoop = () => {
+    setInterval(() => {
+        workers.rotateLogs();
+    }, 1000 * 60 * 60 * 24);
+}
+
 
 // Init script
 workers.init = () => {
@@ -185,4 +258,9 @@ workers.init = () => {
     // Call the loop so checks will execut latter on
     workers.loop();
 
+    // Compress all the logs immediately
+    workers.rotateLogs();
+
+    // Call the compression loop so checks will execute later on
+    workers.logRotationLoop();
 };
