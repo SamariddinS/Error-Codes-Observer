@@ -2,8 +2,8 @@
 
 // Dependemcies
 import { lib as _data } from './data.js';
+import { lib as _logs } from './logs.js';
 import { helpers } from './helpers.js';
-import { logs } from './logs.js'
 import https from 'https';
 import http from 'http';
 import path from 'path';
@@ -183,7 +183,7 @@ workers.log = (originalCheckData, checkOutcome, state, alertWarranted, timeOfChe
         'outcome': checkOutcome,
         'state': state,
         'alert': alertWarranted,
-        'time': timeOfCheck
+        'time': timeOfCheck,
     };
 
     // Convert the data to a string

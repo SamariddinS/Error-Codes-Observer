@@ -6,14 +6,14 @@
 // Dependencies
 import fs from 'fs';
 import path from 'path';
-import { zlib } from 'zlib';
+import zlib from 'zlib';
 
 
-// Container for module (to be exported)
+// Container for module
 export const lib = {};
 
 // Base directory of data folder
-lib.baseDir = path.join(__dirname, '/../.logs/');
+lib.baseDir = path.join(path.dirname('__dirname'), '/././.logs/');
 
 // Append a string to a file. Create the file if it does not exist
 lib.append = (file, str, callback) => {
