@@ -1,6 +1,7 @@
 /*  Dependencies  */
 import https from 'https';
 import http from 'http';
+import {debuglog} from 'util';
 import path from 'path';
 import url from 'url';
 import fs from 'fs';
@@ -8,6 +9,8 @@ import { environmentToExport as config } from './config.js';
 import { handlers } from './handlers.js';
 import { lib as _data } from './data.js';
 import { helpers } from './helpers.js';
+
+const debug = debuglog('worrkers');
 
 
 // Instantiate the server module object
@@ -86,8 +89,13 @@ server.unifiedServer = (req, res) => {
             res.writeHead(statusCode);
             res.end(payloadString);
 
-            // Log the request path
-            console.log("Returning this response: ", statusCode, payloadString);
+            // If respons s is 200, print green, otherwise print red
+            if (statusCode == 200) {
+                debug('\x1b[32m%s\x1b[0m', `${method.toUpperCase()} ${trimmedPath} ${statusCode} ${payloadString.length}`);
+            }
+            else {
+                debug('\x1b[31m%s\x1b[0m', `${method.toUpperCase()} ${trimmedPath} ${statusCode} ${payloadString.length}`);
+            }
         });
 
     });
@@ -105,11 +113,11 @@ server.router = {
 server.init = () => {
     // Start the HTTP server
     server.httpServer.listen(config.httpPort, () => {
-        console.log(`The server is listening ob port ${config.httpPort}`);
+        console.log('\x1b[36m%s\x1b[0m',`The server is listening ob port ${config.httpPort}`);
     });
 
     // Start the HTTPS server
     server.httpsServer.listen(config.httpsPort, () => {
-        console.log(`The server is listening ob port ${config.httpsPort}`);
+        console.log('\x1b[35m%s\x1b[0m', `The server is listening ob port ${config.httpsPort}`);
     });
 }

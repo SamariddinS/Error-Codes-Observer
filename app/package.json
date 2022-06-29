@@ -6,11 +6,11 @@
     "type": "module",
     "scripts": {
         "start": "node index.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "debug": "NODE_DEBUG=http node index.js"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/SamariddinS/Node.js-CLI.git"
+        "url": "git+https://github.com/SamariddinS/Error-Codes-Observer.git"
     },
     "keywords": [
         "file-manager",
@@ -21,10 +21,10 @@
     "author": "Samariddin Sayfiddinov",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/SamariddinS/Node.js-CLI/issues",
+        "url": "https://github.com/SamariddinS/Error-Codes-Observer/issues",
         "email": "s.x.sayfiddionv@gmail.com"
     },
-    "homepage": "https://github.com/SamariddinS/Node.js-CLI#readme",
+    "homepage": "https://github.com/SamariddinS/Error-Codes-Observer#readme",
     "devDependencies": {
         "eslint": "^8.14.0"
     }
